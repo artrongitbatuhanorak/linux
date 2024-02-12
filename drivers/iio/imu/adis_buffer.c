@@ -24,7 +24,6 @@ static int adis_update_scan_mode_burst(struct iio_dev *indio_dev,
 {
 	struct adis *adis = iio_device_get_drvdata(indio_dev);
 	unsigned int burst_length, burst_max_length;
-	u8 *tx;
 
 	burst_length = adis->data->burst_len + adis->burst_extra_len;
 
@@ -44,11 +43,16 @@ static int adis_update_scan_mode_burst(struct iio_dev *indio_dev,
 		return -ENOMEM;
 	}
 
-	tx = adis->buffer + burst_max_length;
-	tx[0] = ADIS_READ_REG(adis->data->burst_reg_cmd);
-	tx[1] = 0;
+	if (!adis->burst_request) {
+		u8 *tx = adis->buffer + burst_max_length;
 
-	adis->xfer[0].tx_buf = tx;
+		tx[0] = ADIS_READ_REG(adis->data->burst_reg_cmd);
+		tx[1] = 0;
+		adis->xfer[0].tx_buf = tx;
+	} else {
+		adis->xfer[0].tx_buf = adis->burst_request;
+	}
+
 	adis->xfer[0].bits_per_word = 8;
 	adis->xfer[0].len = 2;
 	if (adis->data->burst_max_speed_hz)

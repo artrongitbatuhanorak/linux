@@ -104,6 +104,7 @@ struct adis_data {
  * @current_page: Some ADIS devices have registers, this selects current page
  * @irq_flag: IRQ handling flags as passed to request_irq()
  * @buffer: Data buffer for information read from the device
+ * @burst_request: Data containing the burst request code
  * @tx: DMA safe TX buffer for SPI transfers
  * @rx: DMA safe RX buffer for SPI transfers
  */
@@ -130,6 +131,7 @@ struct adis {
 	unsigned int		current_page;
 	unsigned long		irq_flag;
 	void			*buffer;
+	u8			*burst_request;
 
 	u8			tx[10] ____cacheline_aligned;
 	u8			rx[4];
