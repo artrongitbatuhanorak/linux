@@ -1409,9 +1409,8 @@ static void adis16475_burst32_check(struct adis16475 *st)
 	}
 }
 
-static irqreturn_t adis16475_trigger_handler(int irq, void *p)
+static int adis16475_push_single_sample(struct iio_poll_func *pf)
 {
-	struct iio_poll_func *pf = p;
 	struct iio_dev *indio_dev = pf->indio_dev;
 	struct adis16475 *st = iio_priv(indio_dev);
 	struct adis *adis = &st->adis;
@@ -1442,9 +1441,11 @@ static irqreturn_t adis16475_trigger_handler(int irq, void *p)
 			if (((u8 *)adis->buffer)[idx])
 				break;
 
-		if (idx == burst_size)
+		if (idx == burst_size) {
 			/* First spi transaction was a request, sample data on next interrupt */
+			ret = -EAGAIN;
 			goto check_burst32;
+		}
 	}
 
 	buffer = adis->buffer;
@@ -1522,6 +1523,15 @@ check_burst32:
 	 * array.
 	 */
 	adis16475_burst32_check(st);
+	return ret;
+}
+
+static irqreturn_t adis16475_trigger_handler(int irq, void *p)
+{
+	struct iio_poll_func *pf = p;
+	struct iio_dev *indio_dev = pf->indio_dev;
+
+	adis16475_push_single_sample(pf);
 	iio_trigger_notify_done(indio_dev->trig);
 
 	return IRQ_HANDLED;
