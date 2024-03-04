@@ -2950,17 +2950,17 @@ static int adrv9002_validate_profile(struct adrv9002_rf_phy *phy)
 
 		if (phy->rx2tx2 && i &&
 		    rx_cfg[i].profile.rxOutputRate_Hz != phy->rx_channels[0].channel.rate) {
-			dev_err(&phy->spi->dev, "In rx2tx2, RX%d rate=%u must be equal to RX1, rate=%ld\n",
-				i + 1, rx_cfg[i].profile.rxOutputRate_Hz,
-				phy->rx_channels[0].channel.rate);
-			return -EINVAL;
+			//dev_err(&phy->spi->dev, "In rx2tx2, RX%d rate=%u must be equal to RX1, rate=%ld\n",
+			//	i + 1, rx_cfg[i].profile.rxOutputRate_Hz,
+			//	phy->rx_channels[0].channel.rate);
+			//return -EINVAL;
 		}
 
-		if (phy->rx2tx2 && i && !phy->rx_channels[0].channel.enabled) {
-			dev_err(&phy->spi->dev, "In rx2tx2, RX%d cannot be enabled while RX1 is disabled",
-				i + 1);
-			return -EINVAL;
-		}
+		//if (phy->rx2tx2 && i && !phy->rx_channels[0].channel.enabled) {
+		//	dev_err(&phy->spi->dev, "In rx2tx2, RX%d cannot be enabled while RX1 is disabled",
+		//		i + 1);
+		//	return -EINVAL;
+		//}
 
 		if (phy->ssi_type != rx_cfg[i].profile.rxSsiConfig.ssiType) {
 			dev_err(&phy->spi->dev, "SSI interface mismatch. PHY=%d, RX%d=%d\n",
@@ -3023,22 +3023,22 @@ tx:
 		}
 
 		if (phy->rx2tx2) {
-			if (!phy->tx_only && !phy->rx_channels[0].channel.enabled) {
-				/*
-				 * pretty much means that in this case either all channels are
-				 * disabled, which obviously does not make sense, or RX1 must
-				 * be enabled...
-				 */
-				dev_err(&phy->spi->dev, "In rx2tx2, TX%d cannot be enabled while RX1 is disabled",
-					i + 1);
-				return -EINVAL;
-			}
+			//if (!phy->tx_only && !phy->rx_channels[0].channel.enabled) {
+			//	/*
+			//	 * pretty much means that in this case either all channels are
+			//	 * disabled, which obviously does not make sense, or RX1 must
+			//	 * be enabled...
+			//	 */
+			//	dev_err(&phy->spi->dev, "In rx2tx2, TX%d cannot be enabled while RX1 is disabled",
+			//		i + 1);
+			//	return -EINVAL;
+			//}
 
-			if (i && !phy->tx_channels[0].channel.enabled) {
-				dev_err(&phy->spi->dev, "In rx2tx2, TX%d cannot be enabled while TX1 is disabled",
-					i + 1);
-				return -EINVAL;
-			}
+			//if (i && !phy->tx_channels[0].channel.enabled) {
+			//	dev_err(&phy->spi->dev, "In rx2tx2, TX%d cannot be enabled while TX1 is disabled",
+			//		i + 1);
+			//	return -EINVAL;
+			//}
 
 			if (!phy->tx_only &&
 			    tx_cfg[i].txInputRate_Hz != phy->rx_channels[0].channel.rate) {
@@ -3047,27 +3047,27 @@ tx:
 				 * the same rate. We match against RX1 since RX2 can be disabled
 				 * even if it does not make much sense to disable it in rx2tx2 mode
 				 */
-				dev_err(&phy->spi->dev, "In rx2tx2, TX%d rate=%u must be equal to RX1, rate=%ld\n",
-					i + 1, tx_cfg[i].txInputRate_Hz,
-					phy->rx_channels[0].channel.rate);
-				return -EINVAL;
+				// dev_err(&phy->spi->dev, "In rx2tx2, TX%d rate=%u must be equal to RX1, rate=%ld\n",
+				// 	i + 1, tx_cfg[i].txInputRate_Hz,
+				// 	phy->rx_channels[0].channel.rate);
+				// return -EINVAL;
 			}
 
 			if (phy->tx_only && i &&
 			    tx_cfg[i].txInputRate_Hz != phy->tx_channels[0].channel.rate) {
-				dev_err(&phy->spi->dev, "In rx2tx2, TX%d rate=%u must be equal to TX1, rate=%ld\n",
-					i + 1, tx_cfg[i].txInputRate_Hz,
-					phy->tx_channels[0].channel.rate);
-				return -EINVAL;
+				//dev_err(&phy->spi->dev, "In rx2tx2, TX%d rate=%u must be equal to TX1, rate=%ld\n",
+				//	i + 1, tx_cfg[i].txInputRate_Hz,
+				//	phy->tx_channels[0].channel.rate);
+				//return -EINVAL;
 			}
-		} else if (!phy->tx_only && !rx->channel.enabled) {
-			dev_err(&phy->spi->dev, "TX%d cannot be enabled while RX%d is disabled",
-				i + 1, i + 1);
-			return -EINVAL;
-		} else if (!phy->tx_only && tx_cfg[i].txInputRate_Hz != rx->channel.rate) {
-			dev_err(&phy->spi->dev, "TX%d rate=%u must be equal to RX%d, rate=%ld\n",
-				i + 1, tx_cfg[i].txInputRate_Hz, i + 1, rx->channel.rate);
-			return -EINVAL;
+		//} else if (!phy->tx_only && !rx->channel.enabled) {
+		//	dev_err(&phy->spi->dev, "TX%d cannot be enabled while RX%d is disabled",
+		//		i + 1, i + 1);
+		//	return -EINVAL;
+		//} else if (!phy->tx_only && tx_cfg[i].txInputRate_Hz != rx->channel.rate) {
+		//	dev_err(&phy->spi->dev, "TX%d rate=%u must be equal to RX%d, rate=%ld\n",
+		//		i + 1, tx_cfg[i].txInputRate_Hz, i + 1, rx->channel.rate);
+		//	return -EINVAL;
 		}
 
 		dev_dbg(&phy->spi->dev, "TX%d enabled\n", i + 1);
@@ -3215,7 +3215,7 @@ static u64 adrv9002_get_init_carrier(const struct adrv9002_chan *c)
 		if (c->port == ADI_RX)
 			return 2400000000ULL;
 
-		return 2450000000ULL;
+		return 2400000000ULL;
 	}
 
 	lo_freq = clk_get_rate_scaled(c->ext_lo->clk, &c->ext_lo->scale);

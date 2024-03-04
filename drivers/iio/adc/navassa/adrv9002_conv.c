@@ -32,7 +32,8 @@
 
 #include "../cf_axi_adc.h"
 
-#define ADI_RX2_REG_OFF			0x1000
+#define DEBUG
+#define ADI_RX2_REG_OFF			0x0
 #define ADI_TX1_REG_OFF			0x2000
 #define ADI_TX2_REG_OFF			0x4000
 #define ADI_TX_REG_RATE			0x4c
@@ -259,7 +260,7 @@ static int adrv9002_post_setup(struct iio_dev *indio_dev)
 		return ret;
 
 	/* get adc rate now */
-	conv->clk = phy->clks[RX1_SAMPL_CLK];
+	conv->clk = phy->clks[RX2_SAMPL_CLK];
 	conv->adc_clk = clk_get_rate(conv->clk);
 
 	return 0;
@@ -276,7 +277,7 @@ static void adrv9002_axi_digital_tune_verbose(const struct adrv9002_rf_phy *phy,
 	if (tx)
 		ch = &phy->tx_channels[channel].channel;
 	else
-		ch = &phy->tx_channels[channel].channel;
+		ch = &phy->rx_channels[channel].channel;
 
 	pr_info("SAMPL CLK: %lu tuning: %s%d\n",
 	        clk_get_rate(ch->clk), tx ? "TX" : "RX",
